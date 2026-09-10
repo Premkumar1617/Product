@@ -1,0 +1,50 @@
+@model HomeViewModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+<section class="bg-primary text-white py-5">
+    <div class="container text-center">
+        <h1 class="display-5 fw-bold">@Model.Contact.FirmName</h1>
+        <p class="lead mb-4">Chartered Accountants — Audit, Tax &amp; Business Advisory</p>
+        <a class="btn btn-light btn-lg" asp-controller="Contact" asp-action="Index">Get in Touch</a>
+    </div>
+</section>
+
+<section class="container py-5">
+    <h2 class="mb-4 text-center">Our Services</h2>
+    <div class="row g-4">
+        @foreach (var service in Model.Services)
+        {
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 text-center p-3 shadow-sm">
+                    <i class="bi @service.Icon fs-1 text-primary mb-2"></i>
+                    <h5>@service.Title</h5>
+                    <p class="text-muted small mb-0">@service.Description</p>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+<section class="bg-light py-5">
+    <div class="container">
+        <h2 class="mb-4 text-center">Our Team</h2>
+        <div class="row g-4">
+            @foreach (var member in Model.Team)
+            {
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 text-center p-3 shadow-sm">
+                        <i class="bi bi-person-circle fs-1 text-secondary mb-2"></i>
+                        <h6 class="mb-0">@member.Name</h6>
+                        <small class="text-muted">@member.Designation</small>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="container py-4 text-center">
+    <p class="text-muted mb-0">Incorporated on @Model.Contact.IncorporatedOn</p>
+</section>

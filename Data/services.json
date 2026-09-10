@@ -1,0 +1,22 @@
+[
+  {
+    "Title": "Audit & Assurance",
+    "Description": "Statutory, internal and tax audits carried out with rigor and transparency.",
+    "Icon": "bi-clipboard-check"
+  },
+  {
+    "Title": "Tax Advisory",
+    "Description": "Income tax, GST and regulatory compliance and advisory services.",
+    "Icon": "bi-receipt"
+  },
+  {
+    "Title": "Business Startup Support",
+    "Description": "Company/LLP registration, licensing and startup compliance support.",
+    "Icon": "bi-rocket-takeoff"
+  },
+  {
+    "Title": "Financial Reporting",
+    "Description": "Accurate, compliant financial statements and reporting.",
+    "Icon": "bi-bar-chart"
+  }
+]

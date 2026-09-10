@@ -1,0 +1,97 @@
+@model EnquiryViewModel
+@{
+    ViewData["Title"] = "Contact Us";
+    var contact = ViewBag.Contact as FirmContact;
+}
+
+<div class="container py-5">
+    <h1 class="mb-4">Contact Us</h1>
+
+    @if (TempData["EnquirySuccess"] is bool success && success)
+    {
+        <div class="alert alert-success">Thanks! Your enquiry has been received — we'll get back to you soon.</div>
+    }
+
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <form asp-controller="Contact" asp-action="Index" method="post" novalidate>
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Phone" class="form-label"></label>
+                    <input asp-for="Phone" class="form-control" />
+                    <span asp-validation-for="Phone" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Message" class="form-label"></label>
+                    <textarea asp-for="Message" class="form-control" rows="5"></textarea>
+                    <span asp-validation-for="Message" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Send Enquiry</button>
+            </form>
+        </div>
+
+        <div class="col-lg-5">
+            @if (contact != null)
+            {
+                <div class="card p-4 shadow-sm">
+                    <h5>@contact.FirmName</h5>
+                    <p class="mb-2"><i class="bi bi-geo-alt"></i> @contact.Address</p>
+                    <p class="mb-3">
+                        <i class="bi bi-envelope"></i>
+                        <a href="mailto:@contact.Email" class="text-decoration-none">@contact.Email</a>
+                    </p>
+
+                    <p class="mb-2 fw-semibold small text-muted mb-2">Call or message us</p>
+                    <div class="mb-3">
+                        @foreach (var phone in contact.Phones)
+                        {
+                            var digits = PhoneUtils.ToDigits(phone);
+                            <div class="dropdown d-inline-block mb-2 me-2">
+                                <button class="btn btn-sm btn-outline-primary dropdown-toggle"
+                                        type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-telephone"></i> @phone
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" href="tel:+@digits">
+                                            <i class="bi bi-telephone-fill me-2"></i>Call
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="https://wa.me/@digits" target="_blank" rel="noopener">
+                                            <i class="bi bi-whatsapp me-2"></i>WhatsApp
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        }
+                    </div>
+
+                    @{ var waDigits = PhoneUtils.ToDigits(contact.WhatsApp); }
+                    <a class="btn btn-success btn-sm" href="https://wa.me/@waDigits" target="_blank" rel="noopener">
+                        <i class="bi bi-whatsapp"></i> Chat on WhatsApp
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
