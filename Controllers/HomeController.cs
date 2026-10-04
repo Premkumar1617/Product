@@ -23,7 +23,10 @@ public class HomeController : Controller
         };
         return View(vm);
     }
-
+    public async Task<IActionResult> OnGetInTouchClick()
+    {
+        throw new NotImplementedException();
+    }
     public IActionResult Error()
     {
         return View();
