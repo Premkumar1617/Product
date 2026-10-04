@@ -1,0 +1,55 @@
+name: .NET CI
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    permissions:
+      contents: read
+
+    steps:
+
+      # 1. Checkout source code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Setup .NET
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x'
+
+      # 3. Restore dependencies
+      - name: Restore dependencies
+        run: dotnet restore
+
+      # 4. Build
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      # 5. Run unit tests
+      # Uncomment when you have a test project
+      #
+      # - name: Run tests
+      #   run: dotnet test --configuration Release --no-build
+
+      # 6. Publish application
+      - name: Publish application
+        run: dotnet publish --configuration Release --no-restore --output "${{ github.workspace }}/publish"
+
+      # 7. Create GitHub artifact
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dotnet-app
+          path: ${{ github.workspace }}/publish
+          retention-days: 7

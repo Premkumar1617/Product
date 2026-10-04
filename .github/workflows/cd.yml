@@ -1,0 +1,42 @@
+name: .NET CD
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: 'CI workflow run ID containing the artifact'
+        required: true
+        type: string
+
+jobs:
+  deploy:
+    runs-on: windows-latest
+
+    permissions:
+      contents: read
+      actions: read
+      id-token: write
+
+    steps:
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dotnet-app
+          path: ./app
+          run-id: ${{ inputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_322ECDA9EBB54C6BAAB8F7D2BFF92F61 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_23026C94276F4E259BB91FCC18959D66 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_7104A0D10F6744DCA100F32143071188 }}
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'sjbr-v1'
+          slot-name: 'Production'
+          package: ./app
