@@ -3,23 +3,12 @@ name: .NET CD
 on:
   workflow_dispatch:
     inputs:
-
       run_id:
         description: 'CI workflow run ID containing the artifact'
         required: true
         type: string
 
-      environment:
-        description: 'Environment to deploy'
-        required: true
-        type: choice
-        options:
-          - Development
-          - QA
-          - Production
-
 jobs:
-
   deploy:
     runs-on: windows-latest
 
@@ -28,11 +17,8 @@ jobs:
       actions: read
       id-token: write
 
-    environment: ${{ inputs.environment }}
-
     steps:
 
-      # 1. Download artifact from selected CI run
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
@@ -41,7 +27,6 @@ jobs:
           run-id: ${{ inputs.run_id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      # 2. Login to Azure
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -49,7 +34,6 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_23026C94276F4E259BB91FCC18959D66 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_7104A0D10F6744DCA100F32143071188 }}
 
-      # 3. Deploy artifact to Azure App Service
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
