@@ -7,9 +7,10 @@ namespace SJBRAssociatesWeb.Controllers;
 public class HomeController : Controller
 {
     private readonly IJsonDataService _dataService;
-
-    public HomeController(IJsonDataService dataService)
+    private readonly ILogger<HomeController> _logger;
+    public HomeController(IJsonDataService dataService,ILogger<HomeController> logger)
     {
+        _logger = logger;
         _dataService = dataService;
     }
 
@@ -25,7 +26,16 @@ public class HomeController : Controller
     }
     public async Task<IActionResult> OnGetInTouchClick()
     {
-        throw new NotImplementedException();
+        try
+        {
+            throw new NotImplementedException();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while processing request");
+
+        }
+        return RedirectToAction("Index","Contact");
     }
     public IActionResult Error()
     {
