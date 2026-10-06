@@ -26,6 +26,8 @@ public class HomeController : Controller
     }
     public async Task<IActionResult> OnGetInTouchClick()
     {
+        _logger.LogInformation("===== INFORMATION TEST =====");
+
         try
         {
             throw new NotImplementedException();
@@ -33,8 +35,16 @@ public class HomeController : Controller
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error while processing request");
+            _logger.LogError(ex, "===== ERROR TEST FROM MVC =====");
+
+            Console.WriteLine("===== CONSOLE ERROR TEST =====");
+            Console.Error.WriteLine(ex.ToString());
+
+            throw;
 
         }
+        TempData["SuccessMessage"] = "Product created successfully.";
+
         return RedirectToAction("Index","Contact");
     }
     public IActionResult Error()

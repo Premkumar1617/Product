@@ -2,7 +2,9 @@ using SJBRAssociatesWeb;
 using SJBRAssociatesWeb.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.AddConsole();
 Startup.Configuration(builder, args);
+
 builder.Services.AddControllersWithViews();
 
 // Our "database": a JSON file reader/writer. Registered as a singleton because

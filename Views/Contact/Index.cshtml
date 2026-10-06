@@ -11,7 +11,12 @@
     {
         <div class="alert alert-success">Thanks! Your enquiry has been received — we'll get back to you soon.</div>
     }
-
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
     <div class="row g-4">
         <div class="col-lg-7">
             <form asp-controller="Contact" asp-action="Index" method="post" novalidate>
