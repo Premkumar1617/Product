@@ -10,7 +10,7 @@ pr: none
 resources:
   pipelines:
     - pipeline: ci
-      source: 'MVC-CI'                # CHANGE: exact name of your CI pipeline
+      source: 'Premkumar1617.Product'                # CHANGE: exact name of your CI pipeline
 
 pool:
   vmImage: 'ubuntu-latest'
