@@ -1,0 +1,78 @@
+# ===========================================================
+# CI PIPELINE - runs AUTOMATICALLY on every push to main
+# and on every Pull Request targeting main
+# Name it in Azure DevOps as: "MyApp-CI"
+# ===========================================================
+
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    exclude:
+      - README.md
+      - docs/*
+
+pr:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  buildConfiguration: 'Release'
+  # CHANGE THIS to your web project path
+  projectPath: '**/*.csproj'
+  testProjects: '**/*Tests.csproj'
+
+steps:
+  # 1. Install the .NET SDK version you need
+  - task: UseDotNet@2
+    displayName: 'Install .NET SDK'
+    inputs:
+      packageType: 'sdk'
+      version: '10.x'
+
+  # 2. Restore NuGet packages
+  - task: DotNetCoreCLI@2
+    displayName: 'Restore packages'
+    inputs:
+      command: 'restore'
+      projects: '$(projectPath)'
+
+  # 3. Build
+  - task: DotNetCoreCLI@2
+    displayName: 'Build'
+    inputs:
+      command: 'build'
+      projects: '$(projectPath)'
+      arguments: '--configuration $(buildConfiguration) --no-restore'
+
+  # 4. Run unit tests (pipeline fails if any test fails)
+  - task: DotNetCoreCLI@2
+    displayName: 'Run unit tests'
+    inputs:
+      command: 'test'
+      projects: '$(testProjects)'
+      arguments: '--configuration $(buildConfiguration) --collect "XPlat Code Coverage"'
+
+  # 5. Publish the app to a folder + zip it
+  - task: DotNetCoreCLI@2
+    displayName: 'Publish'
+    inputs:
+      command: 'publish'
+      publishWebProjects: false
+      projects: '$(projectPath)'
+      arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+      zipAfterPublish: true
+
+  # 6. Publish the zip as a pipeline ARTIFACT (CD pipeline will pick this up)
+  #    Only publish when building main, not for PR validation builds
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish artifact'
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    inputs:
+      targetPath: '$(Build.ArtifactStagingDirectory)'
+      artifact: 'drop'
