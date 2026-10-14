@@ -1,0 +1,36 @@
+# ===========================================================
+# CI PIPELINE - runs AUTOMATICALLY on every push to main
+# and on every Pull Request targeting main
+# Name it in Azure DevOps as: "MyApp-CI"
+# ===========================================================
+
+trigger: none
+pr: none
+
+resources:
+  pipelines:
+    - pipeline: ci
+      source: 'CI'                # CHANGE: exact name of your CI pipeline
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  azureServiceConnection: 'my-azure-service-connection'   # CHANGE: your connection name
+  webAppName: 'MVC-web'                     # CHANGE: from Azure Portal
+
+stages:
+  - stage: Deploy
+    jobs:
+      - deployment: DeployWeb
+        environment: 'production'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: AzureWebApp@1
+                  inputs:
+                    azureSubscription: '$(azureServiceConnection)'
+                    appType: 'webAppLinux'
+                    appName: '$(webAppName)'
+                    package: '$(Pipeline.Workspace)/ci/drop/**/*.zip'
