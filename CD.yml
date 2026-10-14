@@ -10,7 +10,7 @@ pr: none
 resources:
   pipelines:
     - pipeline: ci
-      source: 'CI'                # CHANGE: exact name of your CI pipeline
+      source: 'CI.yml'                # CHANGE: exact name of your CI pipeline
 
 pool:
   vmImage: 'ubuntu-latest'
